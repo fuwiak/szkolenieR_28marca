@@ -738,6 +738,19 @@ update_sr <- function(x){
 df$dziwny_sr<-lapply(df$SR, update_sr)
 
 
+koduj_loc<-function(x){
+  if (x=='z'){
+    return('szklarnia')
+  }
+  else if (x=='w'){
+    return('kontrola')
+  }
+}
+
+
+
+df$kodowany_loc<-lapply(df$Localisation, koduj_loc)
+
 
 
 
