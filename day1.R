@@ -1000,3 +1000,198 @@ df1 %>% ggplot(aes(x=Localisation, y = SW))  + geom_boxplot(color = "red", fill 
 library("cowplot")
 
 plot_grid(p1,p2)
+
+titanic <- read.csv("https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv")
+
+tab <- table(titanic$Survived, titanic$Sex)
+tab
+
+# test chi-kwadrat
+# H0: nie ma zależności między zmiennymi Survived a Sex
+# H1: istnieje zależność między zmiennymi Survived a Sex
+chisq.test(tab)
+
+
+chisq.test(tab)
+
+p<-chisq.test(tab)$p.value
+
+if(p<0.05){
+  print("Odrzucamy hipotezę zerową, H1")
+}else{
+  print("Nie odrzucamy hipotezy zerowej")
+}
+
+# Współczynnik V Craméra
+
+V<- sqrt(chisq.test(tab)$statistic/(sum(tab)*(min(dim(tab))-1)))
+V
+
+# Współczynnik V Craméra daje w wyniku wartości pomiędzy 0 a +1 (włącznie), przy czym im wynik jest bliżej 0,
+# tym słabszy jest związek między badanymi cechami, a im bliżej jest 1, tym silniejszy jest związek między badanymi cechami
+
+
+
+
+#zadanie 1
+# Zbadac zależność między zmiennymi Survived i Pclass
+# a) przygotować tabele kontyngencji
+# b) przeprowadzić test chi-kwadrat
+# c) obliczyć współczynnik V Craméra
+
+
+
+# a) przygotować tabele kontyngencji
+tab2 <- table(titanic$Survived, titanic$Pclass)
+tab2
+# b) przeprowadzić test chi-kwadrat
+# test chi-kwadrat
+# H0: nie ma zależności między zmiennymi Survived i Pclass
+# H1: istnieje zależność między zmiennymi Survived i Pclass
+chisq.test(tab2)
+p2<-chisq.test(tab2)$p.value
+p2
+if(p2<0.05){
+  print("Odrzucamy hipotezę zerową")
+}else{
+  print("Nie odrzucamy hipotezy zerowej")
+}
+# c) obliczyć współczynnik V Craméra
+V<- sqrt(chisq.test(tab2)$statistic/(sum(tab2)*(min(dim(tab2))-1)))
+V
+
+
+
+#rds - plik zapisany w formacie RDS
+
+url<-"https://github.com/fuwiak/szkolenie_R_podstawowe/blob/main/suicides.rds?raw=true"
+
+# wczytanie danych
+
+suicides<-read_rds(url)
+
+# wyświetlenie danych
+
+suicides %>% glimpse()
+
+# wyświetlenie pierwszych 6 wierszy
+
+suicides %>% head()
+
+
+# H0: brak wplywu zmiennej Sex na zmienna suicides_no
+# H1: wplyw zmiennej Sex na zmienna suicides_no
+anova<-aov(suicides_no~sex, data=suicides)
+
+summary(anova)
+
+
+p<-anova$`Pr(>F)`[1]
+p
+
+V<- sqrt(anova$`F value`[1]/(anova$`F value`[1]+anova$`Num DF`[1]))
+V
+
+
+
+Test t dla grup niezaleznych
+
+# Zalozenia:
+# - dane maja byc normalnie rozkladane
+# - dane maja byc niezalezne
+# - dane maja byc rownorodne
+# - wariancja w grupach jest rowna
+
+suicides %>% ggplot(aes(x = suicides_no)) + geom_boxplot() + facet_wrap(~sex)+ggtitle("samobostwa w zależności od płci")
+
+
+suicides %>% group_by(sex) %>% summarise(shapiro.test(suicides_no)$p.value)
+
+library(nortest)
+library(stats)
+suicides %>% group_by(sex) %>% summarise(ad.test(suicides_no)$p.value)
+
+
+alfa<-0.05
+
+# H0: wariancje w dwoch grupach sa sobie rowne
+# H1: wariancje w grupach sa rozne
+
+
+stats::var.test(suicides_no~sex, data=suicides)
+
+alfa<-0.01
+
+# H0: grupy pochodza z tego samego rozkladu
+# H1: grupy nie pochodza z tego samego rozkladu
+
+
+
+wilcox.test(suicides_no ~ sex, data = suicides)
+
+
+t.test(Fare ~ Sex, data = titanic) 
+
+
+
+
+# analiza korelacji
+
+# Zadanie 3
+
+# Zbadac zależność między zmiennymi suicides_no i gdp_per_capita, do tego celu uzyjemy testu korelacji Pearsona.
+
+# Ustalmy na wstepie ze poziom istotnosci alfa wynosi=0.05. Jezeli wartosc p-value z testu bedzie mniejsza niz 0.05, mozna bedzie stwierdzic zwiazek miedzy zmienna zmienna gdp_per_capita a suicides_no.
+
+# H0: brak wplywu zmiennej gdp_per_capita na zmienna suicides_no
+# H1: wplyw zmiennej gdp_per_capita na zmienna suicides_no
+
+# Zalozenia:
+# - dane maja byc normalnie rozkladane
+# - dane maja byc niezalezne
+# - dane maja byc rownorodne
+# - wariancja w grupach jest rowna
+
+# Normalnosc rozkladu sprawdzamy testem ad.test. Ustalmy na wstepie ze poziom istotnosci alfa wynosi=0.05. Jezeli p-value z testu bedzie wyzsze niz 0.05, nie mamy podstaw, aby odrzucic hipoteze zerowa o normalnosci rozkladu danej zmiennej.
+
+
+# H0: dane sa rozkladane normalnie
+# H1: dane nie sa rozkladane normalnie
+
+ad.test(suicides$suicides_no)
+ad.test(suicides$gdp_per_capita)
+
+suicides %>% ggplot(aes(x = gdp_per_capita))+geom_histogram()
+
+ggplot() + geom_histogram(data = suicides, aes(x = suicides_no), alpha = 0.3) +geom_histogram(data = suicides, aes(x = gdp_per_capita), alpha = 0.7,color='red')+geom_point()+ theme(legend.position = "bottom")
+
+stats::var.test(suicides$gdp_per_capita, suicides$suicides_no)
+
+cor.test(suicides$suicides_no, suicides$gdp_per_capita, method = "spearman")
+
+cor.test(suicides$suicides_no, suicides$gdp_per_capita, method = "pearson")
+
+suicides_num <- suicides %>% select_if(is.numeric)
+
+suicides_num
+
+
+suicides_num %>% select(suicides_no, gdp_per_capita) %>% ggplot(aes(x = suicides_no, y = gdp_per_capita)) + geom_point() + ggtitle("Zależność między zmiennymi suicides_no i gdp_per_capita")
+
+
+#plot heatmap annotating with correlation values
+
+suicides_num %>% cor(method='spearman') %>% round(2) %>% corrplot::corrplot(method = "number")
+
+suicides_num %>% cor(method = "kendall") %>% round(2) %>% corrplot::corrplot(method = "number") 
+
+lm(Fare ~ Age, data = titanic) %>% summary()
+
+
+lm(Fare ~ Age, data = titanic) %>% summary()
+
+lm(Fare ~ Age, data = titanic) %>% summary() %>% .$coefficients %>% as.data.frame()
+
+
+ggplot(titanic, aes(x = Age, y = Fare)) + geom_point() + ggtitle("Zależność między zmiennymi age i fare") + geom_smooth(method = "lm", se = FALSE) + geom_text(aes(label = round(lm(Fare ~ Age, data = titanic) %>% summary() %>% .$r.squared, 2)), x = 20, y = 500, size = 5)
+
