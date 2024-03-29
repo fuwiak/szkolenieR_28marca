@@ -613,6 +613,8 @@ kwadrat <- function(x){
   return (x**2)
 }
 
+kwadrat(6)
+
 podatek<-function(roczne_zarobki, czy_ryczal){
   if (czy_ryczal==TRUE){
     pod = 0.2*roczne_zarobki;
@@ -624,7 +626,7 @@ podatek<-function(roczne_zarobki, czy_ryczal){
   }
 }
 
-podatek(100000, FALSE)
+podatek(10, TRUE)
 
 
 
@@ -638,13 +640,17 @@ wycieczka<-function(kasa){
     print("pijemy piwo")
   }
   
+  else if (kasa<=20 & kasa>5){
+    print("jemy chipsy")
+  }
+  
   else{
     print("Zostajemy w domu")
   }
   
 }
 
-wycieczka(60)
+wycieczka(0)
 
 
 median(df$`%tluszcz`)
@@ -716,6 +722,21 @@ last_4chars(napis1)
 
 
 df$year<-last_4chars(df$code)
+
+
+update_sr <- function(x){
+  if(x>20){
+    x = x+100
+    return(x)
+  }
+  else{
+    x = x-50
+    return(x)
+  }
+}
+
+df$dziwny_sr<-lapply(df$SR, update_sr)
+
 
 
 
