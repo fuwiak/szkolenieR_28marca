@@ -953,4 +953,45 @@ titanic %>% head(10) %>% select(Sex, Ticket)  -> dane
 
 write.csv(dane, file="/Users/user/Downloads/dane.csv")
 
+titanic %>% select(Sex, Age, Pclass) %>% head()
 
+
+titanic %>% filter(Age<39) %>% arrange(Age) %>% mutate(AgeGroup = ifelse(Age < 18, "child", "adult")) %>% head()
+
+
+titanic %>% mutate(AgeGroup = ifelse(Age < 18, "child", "adult")) %>% group_by(AgeGroup) %>% summarise(meanAge = mean(Age))
+
+library(ggplot2)
+
+ggplot(titanic, aes(x = Age)) + geom_histogram(bins = 60, fill = "#1fbfbf",show.legend=TRUE)
+
+ggplot(titanic, aes(x = Age, y = Fare)) + geom_point(color = "red", shape = 8)
+
+
+ggplot(titanic, aes(x = Age, y = Fare)) + geom_point(color = "red", shape = 4) + geom_smooth(method = "lm")
+
+ggplot(titanic, aes(x = Age, y = Fare))+ geom_point(color = "red", shape = 2) + geom_smooth(method = "lm", color = "blue") + theme(legend.position = "bottom")
+
+ggplot(titanic, aes(x = Age, y = Fare)) + geom_point(color = "red", shape = 2) + geom_smooth(method = "lm", color = "blue")+ theme(legend.position = "bottom") + ggtitle("Age vs Fare")
+
+ggplot(titanic, aes(x = Age, y = Fare)) + geom_point(color = "red", shape = 2) + geom_smooth(method = "lm", color = "blue") + theme(legend.position = "bottom") + ggtitle("Age vs Fare") + facet_wrap(~TicketType)
+
+
+
+ggplot(titanic, aes(x = Age, y = Fare)) + geom_point(color = "red", shape = 2) + geom_smooth(method = "lm", color = "blue") + theme(legend.position = "bottom") + ggtitle("Age vs Fare") + facet_wrap(~Sex) + theme(legend.position = "bottom")
+
+ggplot(titanic, aes(x = Fare)) + geom_boxplot()
+
+ggplot(titanic, aes(x = Fare)) + geom_boxplot() + facet_wrap(~Sex)
+
+
+ggplot(titanic, aes(y = Fare)) + geom_boxplot(color = "red", fill = "#1fbfbf")+facet_wrap(~TicketType)+theme(legend.position = "bottom") + ggtitle("Age vs Fare boxpplot") + theme(legend.position = "bottom")
+
+
+############## daneMCW #########################
+
+library(readODS)
+df1<-read_ods("/Users/user/Downloads/daneMCW.ods", sheet = 1)
+df1
+
+df1 %>% filter(Miejscowosc=='Radomierz') %>% ggplot(aes(x=Localisation, y = SR))  + geom_boxplot()
