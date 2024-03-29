@@ -994,4 +994,9 @@ library(readODS)
 df1<-read_ods("/Users/user/Downloads/daneMCW.ods", sheet = 1)
 df1
 
-df1 %>% filter(Miejscowosc=='Radomierz') %>% ggplot(aes(x=Localisation, y = SR))  + geom_boxplot()
+df1 %>% ggplot(aes(x=Localisation, y = SR))  + geom_boxplot(color = "red", fill = "#1fbfbf") +facet_wrap(~Miejscowosc) +labs(x="Name1")+ stat_summary(fun=mean)+ geom_dotplot(binaxis='y', stackdir='center', dotsize=1)->p1
+df1 %>% ggplot(aes(x=Localisation, y = SW))  + geom_boxplot(color = "red", fill = "#1fbfbf") +facet_wrap(~Miejscowosc) +labs(x="Name2")+ stat_summary(fun=mean)+annotate(geom="text", x='w', y=3, label="dupa",color="red")->p2
+
+library("cowplot")
+
+plot_grid(p1,p2)
