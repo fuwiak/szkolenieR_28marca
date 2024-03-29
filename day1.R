@@ -845,10 +845,112 @@ df2
 df <- merge(df1, df2, by = "code", all.x = TRUE) # inner join 
 df
 
+################ FILTROWANIE I WYKRESY################
+
+#pobierz dane z internetu
+titanic <- read.csv("https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv")
+head(titanic)
+
+#policz ilosc pasazerow
+nrow(titanic)
+ncol(titanic)
+
+
+#policz ilosc pasazerow w klasie pierwszej
+sum(titanic$Pclass == 1)
+
+
+#policz ilosc pasazerow w klasie pierwszej i drugiej
+sum(titanic$Pclass == 1 | titanic$Pclass == 2)
+
+sum(titanic$Pclass %in% c(1,2))
+
+
+table(titanic$Sex, titanic$Survived)/nrow(titanic)*100
+
+titanic$FamilySize <- titanic$SibSp + titanic$Parch
+
+
+titanic$AgeGroup <- cut(titanic$Age, breaks = c(0, 18, 35, 60, 100), labels = c("child", "young", "adult", "old"))
+# head(titanic)
+table(titanic$AgeGroup)
+
+
+titanic$TicketType <- ifelse(titanic$Fare > 100, "PREMIUM", "STANDARD")
+
+
+table(titanic$TicketType)
+
+
+table(titanic$Sex=='female' & titanic$Survived==1 & titanic$AgeGroup == 'child')
+
+table(titanic$Sex=='male' & titanic$Survived==0 & titanic$AgeGroup == 'old')
 
 
 
+titanic$Name <- as.character(titanic$Name)
+titanic$Name <- strsplit(titanic$Name, ",")
+titanic$Name <- sapply(titanic$Name, function(x) x[2])
+titanic$title <- sapply(titanic$Name, function(x) strsplit(x, " ")[[1]][2])
 
 
+titanic$title <- gsub("\\.", "", titanic$title)
+titanic$title <- gsub(" ", "", titanic$title)
+titanic$title <- gsub("Mlle", "Miss", titanic$title)
+titanic$title <- gsub("Mme", "Mrs", titanic$title)
+titanic$title <- gsub("Ms", "Miss", titanic$title)
+titanic$title <- gsub("Dr", "Officer", titanic$title)
+titanic$title <- gsub("Major", "Officer", titanic$title)
+
+#policz ilosc tytulow
+
+table(titanic$title)
+
+table(titanic$title)[which.max(table(titanic$title))]
+
+table(titanic$title)[order(table(titanic$title), decreasing = TRUE)[1:3]]
+
+
+titanic[titanic$title == "Miss",]
+
+# na.omit(titanic[titanic$title == "Miss" & titanic$Age <= 25 & titanic$Age >= 18,])
+
+head(titanic[order(titanic$Age),], 5)
+
+
+head(titanic[order(titanic$Age, decreasing = TRUE),], 20)
+
+head(titanic[order(titanic$Age, titanic$Pclass),])
+
+aggregate(Age ~ Pclass, data = titanic, FUN = mean)
+
+
+aggregate(Fare~Sex, data=titanic, FUN=mean)
+
+
+aggregate(Fare~Sex, data=titanic, FUN=max)
+
+aggregate(Fare~Sex+Pclass, data=titanic, FUN=mean)
+
+titanic$AgeGroup <- cut(titanic$Age, breaks = c(0, 18, 35, 60, 100), labels = c("child", "young", "adult", "old"))
+
+
+aggregate(Fare~Sex+Pclass+AgeGroup, data=titanic, FUN)
+
+
+#sprawdz czy wiecej kobiet czy mezczyzn przezylo katastrofe w kazdej klasie(Plass)
+
+
+library(tidyverse)
+library(dplyr)
+
+# install.packages("tidyverse")
+
+# head(titanic)
+
+titanic %>% head(10) %>% select(Sex, Ticket)  -> dane
+
+
+write.csv(dane, file="/Users/user/Downloads/dane.csv")
 
 
