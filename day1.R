@@ -752,6 +752,102 @@ koduj_loc<-function(x){
 df$kodowany_loc<-lapply(df$Localisation, koduj_loc)
 
 
+#############DATA FRAME I WYKRESY ########################
+
+df <- data.frame(a = 1:5, b = letters[1:5], c = TRUE, d = 1+4i)
+df
+
+
+df$'dowolna_nazwa' <-c(9,10,11,12,99)
+df$`dowolna nazwa`<-NULL
+
+df <- rbind(df, c(8, "f", FALSE, 6+8i,88))
+
+df[1,]<- NA
+
+df <- na.omit(df)
+
+write.csv(df, file = "df.csv")
+
+write.csv(df, file="/Users/user/Downloads/df.csv")
+
+
+#odczytaj data frame z pliku csv
+df2 <- read.csv("/Users/user/Downloads/df.csv")
+df2
+
+
+
+colnames(df2)
+
+names(df2)[6]<-"tutaj miala byc nazwa"
+
+
+rownames(df2)[1]<-"wiersz1"
+
+#polacz data frame
+df1 <- data.frame(a = 1:5, b = letters[1:5], c = TRUE, d = 1+4i)
+df2 <- data.frame(a = 6:10, b = letters[6:10], c = FALSE, d = 6+8i)
+
+df1
+df2
+
+df <- rbind(df1, df2)
+df
+
+#polacz data frame
+df1 <- data.frame(a = 1:5, b = letters[1:5], c = TRUE, d = 1+4i)
+df1
+df2 <- data.frame(a = 6:10, b = letters[6:10], c = FALSE, d = 6+8i)
+df2
+df <- cbind(df1, df2)
+
+df[names(df) == 'd']
+
+df[names(df) == 'd'][2]
+
+
+
+#join data frame
+df1 <- data.frame(a = 1:5, b = letters[1:5], c = TRUE, d = 1+4i)
+df2<- data.frame(a = 1:5, b = letters[1:5], c = FALSE, d = 6+8i)
+
+df1
+df2
+
+
+df <- merge(df1, df2, by = "a") # inner join 
+df
+
+#lewy join data frame
+
+df1 <- data.frame(a = 1:5, b = letters[1:5], c = TRUE, d = 1+4i)
+df2<- data.frame(a = 1:5, b = letters[1:5], c = FALSE, d = 6+8i)
+
+df <- merge(df1, df2, by = "a", all.x = TRUE)
+df
+
+#prawy join data frame
+
+df1 <- data.frame(a = 1:5, b = letters[1:5], c = TRUE, d = 1+4i)
+df2<- data.frame(a = 1:5, b = letters[1:5], c = FALSE, d = 6+8i)
+
+df <- merge(df1, df2, by = "a", all.y = TRUE)
+
+
+library(readODS)
+df1<-read_ods("/Users/user/Downloads/daneMCW.ods", sheet = 1)
+df1
+
+df2<-readxl::read_excel("/Users/user/Downloads/fitomcw.xlsx")
+df2
+
+df <- merge(df1, df2, by = "code", all.x = TRUE) # inner join 
+df
+
+
+
+
 
 
 
