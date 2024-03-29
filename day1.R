@@ -592,7 +592,7 @@ lapply(list1, length)
 
 lapply(list1, shapiro.test)
 
-
+library(readODS)
 df<-read_ods("/Users/user/Downloads/daneMCW.ods", sheet = 1)
 
 
@@ -697,6 +697,27 @@ delta(1,1,1)
 kwadrat(3)
 
 lapply(list1,kwadrat)
+
+df$log_SR <-log(df$SR) #tworzymy kolumne o nazwie log_SR w dataframe, i do niej przypisujemy rezulat logarytmu(mozemy cokolwiek innego przypisac)
+
+
+
+library(stringi)
+
+last_4chars<-function(word){
+  four_chars <- substr(word,nchar(word)-3,nchar(word))
+  return(four_chars)
+  
+}
+
+napis1<-'Hello2004'
+last_4chars(napis1)
+
+
+
+df$year<-last_4chars(df$code)
+
+
 
 
 
